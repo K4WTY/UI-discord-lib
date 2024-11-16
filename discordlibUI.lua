@@ -1,8 +1,29 @@
 local DiscordLib = {}
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local HttpService = game:GetService("HttpService")
+local pfp
+local user
+local tag
+local userinfo = {}
+
+pcall(function()
+	userinfo = HttpService:JSONDecode(readfile("discordlibinfo.txt"));
+end)
+
+pfp = userinfo["pfp"] or "https://www.roblox.com/headshot-thumbnail/image?userId=".. game.Players.LocalPlayer.UserId .."&width=420&height=420&format=png"
+user =  userinfo["user"] or game.Players.LocalPlayer.Name
+tag = userinfo["tag"] or tostring(math.random(1000,9999))
+
+local function SaveInfo()
+	userinfo["pfp"] = pfp
+	userinfo["user"] = user
+	userinfo["tag"] = tag
+	writefile("discordlibinfo.txt", HttpService:JSONEncode(userinfo));
+end
 
 local function MakeDraggable(topbarobject, object)
 	local Dragging = nil
@@ -177,6 +198,13 @@ function DiscordLib:Window(text)
 	UserIconCorner.CornerRadius = UDim.new(1, 8)
 	UserIconCorner.Name = "UserIconCorner"
 	UserIconCorner.Parent = UserIcon
+
+	UserImage.Name = "UserImage"
+	UserImage.Parent = UserIcon
+	UserImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	UserImage.BackgroundTransparency = 1.000
+	UserImage.Size = UDim2.new(0, 32, 0, 32)
+	UserImage.Image = pfp 
 	
 	UserCircleImage.Name = "UserImage"
 	UserCircleImage.Parent = UserImage
@@ -185,6 +213,9 @@ function DiscordLib:Window(text)
 	UserCircleImage.Size = UDim2.new(0, 32, 0, 32)
 	UserCircleImage.Image = "rbxassetid://4031889928"
 	UserCircleImage.ImageColor3 = Color3.fromRGB(41, 43, 47)
+	
+	UserName.Text = user
+	UserTag.Text = "#" .. tag
 
 	ServersHoldFrame.Name = "ServersHoldFrame"
 	ServersHoldFrame.Parent = MainFrame
@@ -266,7 +297,6 @@ function DiscordLib:Window(text)
 		end
 	)
 	
-	local SettingsOpenBtn = Instance.new("TextButton")
 	local SettingsOpenBtnIco = Instance.new("ImageLabel")
 
 	SettingsOpenBtnIco.Name = "SettingsOpenBtnIco"
@@ -319,14 +349,14 @@ function DiscordLib:Window(text)
 
 	SettingsFrame.Name = "SettingsFrame"
 	SettingsFrame.Parent = MainFrame
-	SettingsFrame.BackgroundColor3 = Color3.fromRGB(255, 49, 54)
+	SettingsFrame.BackgroundColor3 = Color3.fromRGB(47, 49, 54)
 	SettingsFrame.BackgroundTransparency = 1.000
 	SettingsFrame.Size = UDim2.new(0, 681, 0, 396)
 	SettingsFrame.Visible = false
 
 	Settings.Name = "Settings"
 	Settings.Parent = SettingsFrame
-	Settings.BackgroundColor3 = Color3.fromRGB(255, 57, 63)
+	Settings.BackgroundColor3 = Color3.fromRGB(54, 57, 63)
 	Settings.BorderSizePixel = 0
 	Settings.Position = UDim2.new(0, 0, 0.0530303046, 0)
 	Settings.Size = UDim2.new(0, 681, 0, 375)
@@ -334,7 +364,7 @@ function DiscordLib:Window(text)
 	SettingsHolder.Name = "SettingsHolder"
 	SettingsHolder.Parent = Settings
 	SettingsHolder.AnchorPoint = Vector2.new(0.5, 0.5)
-	SettingsHolder.BackgroundColor3 = Color3.fromRGB(255, 0, 255)
+	SettingsHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	SettingsHolder.BackgroundTransparency = 1.000
 	SettingsHolder.ClipsDescendants = true
 	SettingsHolder.Position = UDim2.new(0.49926579, 0, 0.498666674, 0)
@@ -450,7 +480,7 @@ function DiscordLib:Window(text)
 
 	UserSettingsPad.Name = "UserSettingsPad"
 	UserSettingsPad.Parent = UserPanel
-	UserSettingsPad.BackgroundColor3 = Color3.fromRGB(255, 57, 63)
+	UserSettingsPad.BackgroundColor3 = Color3.fromRGB(54, 57, 63)
 	UserSettingsPad.Position = UDim2.new(0.0331491716, 0, 0.568140388, 0)
 	UserSettingsPad.Size = UDim2.new(0, 337, 0, 56)
 
@@ -478,12 +508,13 @@ function DiscordLib:Window(text)
 
 	UserSettingsPadUser.Name = "UserSettingsPadUser"
 	UserSettingsPadUser.Parent = UserSettingsPadUserTag
-	UserSettingsPadUser.BackgroundColor3 = Color3.fromRGB(0, 255, 255)
+	UserSettingsPadUser.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	UserSettingsPadUser.BackgroundTransparency = 1.000
 	UserSettingsPadUser.Font = Enum.Font.Gotham
 	UserSettingsPadUser.TextColor3 = Color3.fromRGB(255, 255, 255)
 	UserSettingsPadUser.TextSize = 13.000
 	UserSettingsPadUser.TextXAlignment = Enum.TextXAlignment.Left
+	UserSettingsPadUser.Text = user
 	UserSettingsPadUser.Size = UDim2.new(0, UserSettingsPadUser.TextBounds.X + 2, 0, 19)
 
 	UserSettingsPadUserTagLayout.Name = "UserSettingsPadUserTagLayout"
@@ -498,6 +529,7 @@ function DiscordLib:Window(text)
 	UserSettingsPadTag.Position = UDim2.new(0.0419999994, 0, 0.493999988, 0)
 	UserSettingsPadTag.Size = UDim2.new(0, 65, 0, 19)
 	UserSettingsPadTag.Font = Enum.Font.Gotham
+	UserSettingsPadTag.Text = "#" .. tag
 	UserSettingsPadTag.TextColor3 = Color3.fromRGB(184, 186, 189)
 	UserSettingsPadTag.TextSize = 13.000
 	UserSettingsPadTag.TextXAlignment = Enum.TextXAlignment.Left
@@ -541,6 +573,13 @@ function DiscordLib:Window(text)
 	UserPanelUserIcon.Size = UDim2.new(0, 71, 0, 71)
 	UserPanelUserIcon.AutoButtonColor = false
 	UserPanelUserIcon.Text = ""
+
+	UserPanelUserImage.Name = "UserPanelUserImage"
+	UserPanelUserImage.Parent = UserPanelUserIcon
+	UserPanelUserImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	UserPanelUserImage.BackgroundTransparency = 1.000
+	UserPanelUserImage.Size = UDim2.new(0, 71, 0, 71)
+	UserPanelUserImage.Image = pfp
 
 	UserPanelUserCircle.Name = "UserPanelUserCircle"
 	UserPanelUserCircle.Parent = UserPanelUserImage
@@ -767,6 +806,10 @@ function DiscordLib:Window(text)
 		end)
 
 		ChangeBtn.MouseButton1Click:Connect(function()
+			pfp = tostring(AvatarTextbox.Text)
+			UserImage.Image = pfp 
+			UserPanelUserImage.Image = pfp
+			SaveInfo()
 
 			AvatarChange:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .2, true)
 			TweenService:Create(
@@ -836,6 +879,11 @@ function DiscordLib:Window(text)
 		ResetBtn.TextSize = 13.000
 		
 		ResetBtn.MouseButton1Click:Connect(function()
+			pfp = "https://www.roblox.com/headshot-thumbnail/image?userId=".. game.Players.LocalPlayer.UserId .."&width=420&height=420&format=png"
+			UserImage.Image = pfp 
+			UserPanelUserImage.Image = pfp
+			SaveInfo()
+
 			AvatarChange:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .2, true)
 			TweenService:Create(
 				AvatarChange,
@@ -916,7 +964,7 @@ function DiscordLib:Window(text)
 			TweenService:Create(
 				TextBoxFrame,
 				TweenInfo.new(.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-				{BackgroundColor3 = Color3.fromRGB(255, 40, 43)}
+				{BackgroundColor3 = Color3.fromRGB(37, 40, 43)}
 			):Play()
 		end)
 
@@ -938,6 +986,7 @@ function DiscordLib:Window(text)
 	UserPanelUser.TextColor3 = Color3.fromRGB(255, 255, 255)
 	UserPanelUser.TextSize = 17.000
 	UserPanelUser.TextXAlignment = Enum.TextXAlignment.Left
+	UserPanelUser.Text = user
 	UserPanelUser.Size = UDim2.new(0, UserPanelUser.TextBounds.X + 2, 0, 19)
 
 	
@@ -953,6 +1002,7 @@ function DiscordLib:Window(text)
 	UserPanelTag.Position = UDim2.new(0.0419999994, 0, 0.493999988, 0)
 	UserPanelTag.Size = UDim2.new(0, 65, 0, 19)
 	UserPanelTag.Font = Enum.Font.Gotham
+	UserPanelTag.Text = "#" .. tag
 	UserPanelTag.TextColor3 = Color3.fromRGB(184, 186, 189)
 	UserPanelTag.TextSize = 17.000
 	UserPanelTag.TextXAlignment = Enum.TextXAlignment.Left
@@ -962,14 +1012,14 @@ function DiscordLib:Window(text)
 
 	LeftFrame.Name = "LeftFrame"
 	LeftFrame.Parent = SettingsHolder
-	LeftFrame.BackgroundColor3 = Color3.fromRGB(255, 49, 54)
+	LeftFrame.BackgroundColor3 = Color3.fromRGB(47, 49, 54)
 	LeftFrame.BorderSizePixel = 0
 	LeftFrame.Position = UDim2.new(0, 0, -0.000303059904, 0)
 	LeftFrame.Size = UDim2.new(0, 233, 0, 375)
 
 	MyAccountBtn.Name = "MyAccountBtn"
 	MyAccountBtn.Parent = LeftFrame
-	MyAccountBtn.BackgroundColor3 = Color3.fromRGB(255, 60, 67)
+	MyAccountBtn.BackgroundColor3 = Color3.fromRGB(57, 60, 67)
 	MyAccountBtn.BorderSizePixel = 0
 	MyAccountBtn.Position = UDim2.new(0.271232396, 0, 0.101614028, 0)
 	MyAccountBtn.Size = UDim2.new(0, 160, 0, 30)
@@ -3141,5 +3191,4 @@ function DiscordLib:Window(text)
 	end
 	return ServerHold
 end
-
 return DiscordLib
