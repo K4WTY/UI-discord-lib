@@ -10,20 +10,7 @@ local user
 local tag
 local userinfo = {}
 
-pcall(function()
-	userinfo = HttpService:JSONDecode(readfile("discordlibinfo.txt"));
-end)
-
-pfp = userinfo["pfp"] or "https://www.roblox.com/headshot-thumbnail/image?userId=".. game.Players.LocalPlayer.UserId .."&width=420&height=420&format=png"
-user =  userinfo["user"] or game.Players.LocalPlayer.Name
 tag = userinfo["tag"] or tostring(math.random(1000,9999))
-
-local function SaveInfo()
-	userinfo["pfp"] = pfp
-	userinfo["user"] = user
-	userinfo["tag"] = tag
-	writefile("discordlibinfo.txt", HttpService:JSONEncode(userinfo));
-end
 
 local function MakeDraggable(topbarobject, object)
 	local Dragging = nil
@@ -204,7 +191,6 @@ function DiscordLib:Window(text)
 	UserImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	UserImage.BackgroundTransparency = 1.000
 	UserImage.Size = UDim2.new(0, 32, 0, 32)
-	UserImage.Image = pfp 
 	
 	UserCircleImage.Name = "UserImage"
 	UserCircleImage.Parent = UserImage
@@ -214,8 +200,8 @@ function DiscordLib:Window(text)
 	UserCircleImage.Image = "rbxassetid://4031889928"
 	UserCircleImage.ImageColor3 = Color3.fromRGB(41, 43, 47)
 	
-	UserName.Text = user
-	UserTag.Text = "#" .. tag
+
+
 
 	ServersHoldFrame.Name = "ServersHoldFrame"
 	ServersHoldFrame.Parent = MainFrame
@@ -297,6 +283,7 @@ function DiscordLib:Window(text)
 		end
 	)
 	
+	local SettingsOpenBtn = Instance.new("TextButton")
 	local SettingsOpenBtnIco = Instance.new("ImageLabel")
 
 	SettingsOpenBtnIco.Name = "SettingsOpenBtnIco"
@@ -514,7 +501,6 @@ function DiscordLib:Window(text)
 	UserSettingsPadUser.TextColor3 = Color3.fromRGB(255, 255, 255)
 	UserSettingsPadUser.TextSize = 13.000
 	UserSettingsPadUser.TextXAlignment = Enum.TextXAlignment.Left
-	UserSettingsPadUser.Text = user
 	UserSettingsPadUser.Size = UDim2.new(0, UserSettingsPadUser.TextBounds.X + 2, 0, 19)
 
 	UserSettingsPadUserTagLayout.Name = "UserSettingsPadUserTagLayout"
@@ -579,7 +565,6 @@ function DiscordLib:Window(text)
 	UserPanelUserImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	UserPanelUserImage.BackgroundTransparency = 1.000
 	UserPanelUserImage.Size = UDim2.new(0, 71, 0, 71)
-	UserPanelUserImage.Image = pfp
 
 	UserPanelUserCircle.Name = "UserPanelUserCircle"
 	UserPanelUserCircle.Parent = UserPanelUserImage
@@ -806,11 +791,6 @@ function DiscordLib:Window(text)
 		end)
 
 		ChangeBtn.MouseButton1Click:Connect(function()
-			pfp = tostring(AvatarTextbox.Text)
-			UserImage.Image = pfp 
-			UserPanelUserImage.Image = pfp
-			SaveInfo()
-
 			AvatarChange:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .2, true)
 			TweenService:Create(
 				AvatarChange,
@@ -879,10 +859,6 @@ function DiscordLib:Window(text)
 		ResetBtn.TextSize = 13.000
 		
 		ResetBtn.MouseButton1Click:Connect(function()
-			pfp = "https://www.roblox.com/headshot-thumbnail/image?userId=".. game.Players.LocalPlayer.UserId .."&width=420&height=420&format=png"
-			UserImage.Image = pfp 
-			UserPanelUserImage.Image = pfp
-			SaveInfo()
 
 			AvatarChange:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .2, true)
 			TweenService:Create(
@@ -986,7 +962,6 @@ function DiscordLib:Window(text)
 	UserPanelUser.TextColor3 = Color3.fromRGB(255, 255, 255)
 	UserPanelUser.TextSize = 17.000
 	UserPanelUser.TextXAlignment = Enum.TextXAlignment.Left
-	UserPanelUser.Text = user
 	UserPanelUser.Size = UDim2.new(0, UserPanelUser.TextBounds.X + 2, 0, 19)
 
 	
@@ -1002,7 +977,6 @@ function DiscordLib:Window(text)
 	UserPanelTag.Position = UDim2.new(0.0419999994, 0, 0.493999988, 0)
 	UserPanelTag.Size = UDim2.new(0, 65, 0, 19)
 	UserPanelTag.Font = Enum.Font.Gotham
-	UserPanelTag.Text = "#" .. tag
 	UserPanelTag.TextColor3 = Color3.fromRGB(184, 186, 189)
 	UserPanelTag.TextSize = 17.000
 	UserPanelTag.TextXAlignment = Enum.TextXAlignment.Left
@@ -1237,7 +1211,6 @@ function DiscordLib:Window(text)
 		UsernameTextbox.Position = UDim2.new(0.0378548913, 0, 0, 0)
 		UsernameTextbox.Size = UDim2.new(0, 221, 0, 37)
 		UsernameTextbox.Font = Enum.Font.Gotham
-		UsernameTextbox.Text = user
 		UsernameTextbox.TextColor3 = Color3.fromRGB(193, 195, 197)
 		UsernameTextbox.TextSize = 14.000
 		UsernameTextbox.TextXAlignment = Enum.TextXAlignment.Left
@@ -1302,17 +1275,10 @@ function DiscordLib:Window(text)
 		end)
 		
 		ChangeBtn.MouseButton1Click:Connect(function()
-			user = UsernameTextbox.Text
 			tag = TagTextbox.Text
 			UserSettingsPadUser.Text = user
 			UserSettingsPadUser.Size = UDim2.new(0, UserSettingsPadUser.TextBounds.X + 2, 0, 19)
-			UserSettingsPadTag.Text = "#" .. tag
-			UserPanelTag.Text = "#" .. tag
-			UserPanelUser.Text = user
 			UserPanelUser.Size = UDim2.new(0, UserPanelUser.TextBounds.X + 2, 0, 19)
-			UserName.Text = user
-			UserTag.Text = "#" .. tag
-			SaveInfo()
 
 			UserChange:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .2, true)
 			TweenService:Create(
